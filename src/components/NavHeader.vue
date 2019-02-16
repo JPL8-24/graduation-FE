@@ -9,16 +9,21 @@
                 <Icon type="md-globe" />首页
                 </MenuItem>
                 <MenuItem name="2" class="MenuItem">
-                <Icon type="ios-baseball-outline"/>讨论区
+                <Icon type="ios-baseball-outline" />讨论区
                 </MenuItem>
                 <MenuItem name="3" class="MenuItem">
                 <Icon type="ios-man-outline" />个人中心
                 </MenuItem>
             </div>
-            <div class="userInfo">
+            <div class="userInfo" @mouseover="menuShow" @mouseout="menuOut">
                 <Avatar icon="ios-person" size="large" />
                 <p>userName</p>
                 <Icon type="ios-arrow-dropdown" size="24" />
+                <transition name="fade">
+                    <div class="A" v-if="menu">
+                        <div class="listItem"><Icon type="md-alert" size='14' />注销</div>
+                    </div>
+                </transition>
             </div>
         </Menu>
     </div>
@@ -32,13 +37,14 @@
         MenuGroup,
         Icon,
         Avatar
-    } from 'iview'
+    } from "iview";
     export default {
-        name: '',
+        name: "",
         data() {
             return {
-                theme1: 'primary'
-            }
+                theme1: "primary",
+                menu: false
+            };
         },
         components: {
             Menu,
@@ -48,8 +54,16 @@
             Icon,
             Avatar
         },
-        props: ['activename']
-    }
+        props: ["activename"],
+        methods: {
+            menuShow() {
+                this.menu = true;
+            },
+            menuOut() {
+                this.menu = false;
+            }
+        }
+    };
 </script>
 
 <style scoped>
@@ -68,7 +82,6 @@
         border-bottom: 1px solid #2d8cf0;
         position: relative;
         left: 20%;
-
     }
 
     .logo>img {
@@ -84,7 +97,7 @@
         color: white;
         background-color: #62a8d1;
         padding: 8px;
-
+        position: relative;
     }
 
     .ivu-avatar {
@@ -93,5 +106,41 @@
 
     .userInfo>p {
         margin-right: 6px;
+    }
+
+    .A {
+        position: absolute;
+        top: 100%;
+        background: white;
+        left: 0;
+        width: 100%;
+        transition: all 1s;
+    }
+
+    .fade-enter {
+        opacity: 0;
+    }
+
+    .fade-enter-active {
+        transition: opacity .5s;
+    }
+
+    .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-leave-to {   
+       opacity: 0;
+    }
+
+    .listItem {
+        text-align: center;
+        font-size:12px;
+        color:black;
+        height: 40px;
+        line-height: 40px;
+    }
+    .listItem:hover{
+        background-color: lightgray;
     }
 </style>

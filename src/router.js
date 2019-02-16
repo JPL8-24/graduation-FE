@@ -4,6 +4,9 @@ const Login = () => import('./views/Login/Login.vue')
 const Home = () => import('./views/Home/Home.vue')
 const question=()=>import('./views/question/question.vue')
 const Forum =()=>import('./views/Forum/Forum.vue')
+const Publish=()=> import('./views/Publish/index.vue')
+const THome=()=> import('./views/THome/THome.vue')
+const Check=()=> import('./views/Check/check.vue')
 
 Vue.use(Router)
 
@@ -27,5 +30,17 @@ export default new Router({
     path:'/forum',
     name:'forum',
     component:Forum
+  },{
+    path:'/publish',
+    name:'publish',
+    component:Publish
+  },{
+    path:'/THome',
+    name:'THome',
+    component:THome
+  },{
+    path:'/check',
+    name:'check',
+    component:Check
   }]
 })
