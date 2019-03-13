@@ -2,19 +2,18 @@
     <div>
         <div class="question-title">[不定项选择题]</div>
         <div class="des">
-            浏览器渲染流程,以下哪个顺序是正确的?
-            1构建render树 2绘制render树 3布局render树 4解析HTML并构建DOM树
+            {{questionData.des}}
         </div>
         <checkbox-group v-model="answer">
-            <div class="options" v-for="(item,index) in option" :key="index">
-                <Checkbox :label="item" @click.native.self="check($event)"></Checkbox>
+            <div class="options" v-for="(item,key,index) in questionData.options" :key="index">
+                <Checkbox :label="key" @click.native.self="check($event)">{{item}}</Checkbox>
             </div>
         </checkbox-group>
         <div class="btn-group">
-            <div class="btn  pre-btn">
+            <div class="btn  pre-btn" @click.stop="pre">
                 上一题
             </div>
-            <div class="btn next-btn">
+            <div class="btn next-btn" @click.stop="next">
                 下一题
             </div>
         </div>
@@ -26,12 +25,14 @@
         CheckboxGroup,
         Checkbox
     } from 'iview'
+    import {
+        mapMutations
+    } from 'vuex'
     export default {
         name: '',
         data() {
             return {
-                answer: [],
-                option: ["a", "b", "c", "d"]
+                answer: []
             }
         },
         components: {
@@ -45,8 +46,23 @@
                 } else {
                     event.target.parentNode.classList.add('checked')
                 }
+            },
+            ...mapMutations([
+                'setQustionIndex',
+                'setPreQuestionIndex'
+            ]),
+            next() {
+                this.setQustionIndex({})
+            },
+            pre() {
+                this.setPreQuestionIndex()
             }
-        }
+        },
+        props: {
+            questionData: {
+                type: Object
+            }
+        },
     }
 </script>
 

@@ -17,11 +17,12 @@
             </div>
             <div class="userInfo" @mouseover="menuShow" @mouseout="menuOut">
                 <Avatar icon="ios-person" size="large" />
-                <p>userName</p>
+                <p>{{userName}}</p>
                 <Icon type="ios-arrow-dropdown" size="24" />
                 <transition name="fade">
                     <div class="A" v-if="menu">
-                        <div class="listItem"><Icon type="md-alert" size='14' />注销</div>
+                        <div class="listItem">
+                            <Icon type="md-alert" size='14' />注销</div>
                     </div>
                 </transition>
             </div>
@@ -36,8 +37,13 @@
         Submenu,
         MenuGroup,
         Icon,
-        Avatar
+        Avatar,
+        Notice
     } from "iview";
+    import {
+        mapState,
+        mapMutations
+    } from 'vuex'
     export default {
         name: "",
         data() {
@@ -52,7 +58,8 @@
             Submenu,
             MenuGroup,
             Icon,
-            Avatar
+            Avatar,
+            Notice
         },
         props: ["activename"],
         methods: {
@@ -61,7 +68,31 @@
             },
             menuOut() {
                 this.menu = false;
-            }
+            },
+            autoLogin() {
+                this.$api.aotuLogin().then((res) => {
+                    if (res.data.status === '1') {
+                        this.changeUserInfo(res.data.data)
+                    } else if(res.data.status === '2'){
+                        Notice.error({
+                            title:'自动登录失败',
+                            desc:'token验证错误'
+                        })
+                    }
+                    
+                }).catch((err) => {
+
+                });
+            },
+            ...mapMutations(['changeUserInfo'])
+        },
+        computed: {
+            ...mapState({
+                userName: state => state.user.userName,
+            })
+        },
+        created() {
+            this.autoLogin()
         }
     };
 </script>
@@ -129,18 +160,19 @@
         transition: opacity .5s;
     }
 
-    .fade-leave-to {   
-       opacity: 0;
+    .fade-leave-to {
+        opacity: 0;
     }
 
     .listItem {
         text-align: center;
-        font-size:12px;
-        color:black;
+        font-size: 12px;
+        color: black;
         height: 40px;
         line-height: 40px;
     }
-    .listItem:hover{
+
+    .listItem:hover {
         background-color: lightgray;
     }
 </style>

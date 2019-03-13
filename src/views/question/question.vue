@@ -3,8 +3,8 @@
       <nav-header></nav-header>
       <div class="question">
          <div class="question-header">
-            <Progress :percent="45" status="active" :stroke-width="14">
-               <span id="text">1/12</span>
+            <Progress :percent="percent" status="active" :stroke-width="14">
+               <span id="text">{{currentQuestion.index}}/{{localDb.length}}</span>
             </Progress>
             <a class="progress-time">
                <div class="icon">
@@ -15,12 +15,11 @@
                </div>
             </a>
          </div>
-         <!-- <rquestion></rquestion> -->
-         <!-- <cquestion></cquestion> -->
-         <squestion></squestion>
-         <page :total="10"></page>
+         <rquestion v-if="currentQuestion.type==='1'" :questionData='currentQuestion'></rquestion>
+         <cquestion v-else-if="currentQuestion.type==='2'" :questionData='currentQuestion'></cquestion>
+         <squestion v-else-if="currentQuestion.type==='3'" :questionData='currentQuestion'></squestion>
+         <page :total="questionCount"></page>
       </div>
-
    </div>
 </template>
 
@@ -37,24 +36,21 @@
       Radio,
       Button
    } from "iview";
-
+   import {
+      mapState,
+      mapMutations
+   } from 'vuex'
    export default {
       name: '',
       data() {
          return {
             time: "02:00:00",
             timer: "",
-            question:[
-               {
-                  
-               },
-               {
-
-               },
-               {
-
-               }
-            ]
+            question: [],
+            questionID: '',
+            currentQuestion: {},
+            percent: 0,
+            questionCount: 0
          }
       },
       components: {
@@ -99,22 +95,61 @@
                i = "0" + i;
             }
             return i;
-         }
-      },
-      mounted() {
-         // this.initTime()
+         },
+         getPaperContent(id) {
+            this.$api.getPaperContent(id).then((res) => {
+               if (res.data.status === '1') {
+                  this.setQuestionInfo(res.data.data)
+                  this.setLocalDb({
+                     questions: res.data.data.questions
+                  })
+                  this.currentQuestion = this.localDb[this.questionIndex]
+                  let current = parseInt(this.currentQuestion.index)
+                  this.percent = (current / this.localDb.length) * 100
+                  this.time = this.questionInfo.TotalTime
+                  this.questionCount = this.localDb.length
+               }
+            })
+         },
+         ...mapMutations([
+            'setLocalDb',
+            'setQuestionInfo',
+            'setQustionIndex'
+         ])
       },
       destroyed() {
          clearInterval(this.timer);
+      },
+      mounted() {
+         this.questionID = this.$route.query.questionID
+         this.getPaperContent(this.questionID)
+         document.body.style.backgroundColor = "#eee";
+      },
+      computed: {
+         ...mapState({
+            localDb: state => state.paper.localDb,
+            questionInfo: state => state.paper.questionInfo,
+            questionIndex: state => state.paper.questionIndex,
+
+         })
+      },
+      watch: {
+         questionIndex(newVal, oldVal) {
+            this.currentQuestion = this.localDb[newVal]
+            let current = parseInt(this.currentQuestion.index)
+            this.percent = (current / this.localDb.length) * 100
+         }
       }
    }
 </script>
 
 <style scoped>
-   .main {
+   body {
       background: #eee;
+   }
+
+   .main {
       width: 100%;
-      height: 100%;
       overflow: hidden;
    }
 

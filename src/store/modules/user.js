@@ -1,11 +1,13 @@
 const state= {
     userName:'',
-    userId:''
+    userID:'',
+    type:''
 }
 const mutations={
-    changeUserName(state,payload){
-        state.userName=payload
-        console.log(state.userName)
+    changeUserInfo(state,payload){
+        state.userID=payload.userID
+        state.userName=payload.userName
+        state.tpye=payload.type
     }
 }
 

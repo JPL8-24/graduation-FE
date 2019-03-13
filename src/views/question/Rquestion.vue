@@ -2,21 +2,20 @@
   <div>
     <div class="question-title">[单项选择题]</div>
     <div class="des">
-      浏览器渲染流程,以下哪个顺序是正确的?
-      1构建render树 2绘制render树 3布局render树 4解析HTML并构建DOM树
+      {{questionData.des}}
     </div>
     <RadioGroup v-model="answer" vertical>
-      <div class="options" v-for="(item,index) in option" :key="index" ref='option'>
-        <radio :label="item" @click.native.self="checked(index,$event)">
+      <div class="options" v-for="(item,key,index) in questionData.options" :key="index" ref='option'>
+        <radio :label="key" @click.native.self="checked(index,$event)">
           <span>{{item}}</span>
         </radio>
       </div>
     </RadioGroup>
     <div class="btn-group">
-      <div class="btn  pre-btn">
+      <div class="btn  pre-btn" @click.stop="pre">
         上一题
       </div>
-      <div class="btn next-btn">
+      <div class="btn next-btn" @click.stop="next">
         下一题
       </div>
     </div>
@@ -30,12 +29,15 @@
     Radio,
     Button
   } from "iview";
+  import {
+    mapMutations
+  } from 'vuex'
   export default {
     name: "",
     data() {
       return {
         answer: "",
-        option: ["a", "b", "c", "d"]
+        option: {}
       };
     },
     components: {
@@ -45,7 +47,6 @@
     },
     methods: {
       checked(index, event) {
-        console.log('1')
         let bro = this.$refs['option']
         let len = bro.length
         for (let i = 0; i < len; i++) {
@@ -53,13 +54,22 @@
         }
         let checked = bro[index]
         checked.classList.add('checked')
+      },
+      ...mapMutations([
+        'setQustionIndex',
+        'setPreQuestionIndex'
+      ]),
+      next(){
+        this.setQustionIndex({})
+      },
+      pre(){
+        this.setPreQuestionIndex()
       }
     },
-    mounted() {
-      // this.initTime()
-    },
-    destroyed() {
-      clearInterval(this.timer);
+    props: {
+      questionData: {
+        type: Object
+      }
     }
   };
 </script>

@@ -10,66 +10,94 @@
         <Rate disabled v-model='value' show-text>
         </Rate>
       </card>
-      <card>
-        <p slot="title">招商银行信用卡中心2019秋招IT笔试（AI方向第三批）</p>
-      </card>
-      <card>
-        <p slot="title">招商银行信用卡中心2019秋招IT笔试（AI方向第三批）</p>
+      <card v-for="item in paperList" :key="item.id" @click.native="gotoQuestion(item.paperID)">
+        <p slot="title">{{item.title}}</p>
+        <div class="test-img">
+          <img :src="item.Img">
+        </div>
+        <p class="text">共{{item.questions.length}}题</p>
+        <Rate disabled v-model='item.paperRate' show-text>
+        </Rate>
       </card>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { Card ,Rate} from "iview";
-export default {
-  data() {
-    return {
-      value:3.8
-    };
-  },
-  components: {
+  import {
     Card,
     Rate
-  }
-};
+  } from "iview";
+  export default {
+    data() {
+      return {
+        value: 3.8,
+        paperList: []
+      };
+    },
+    components: {
+      Card,
+      Rate
+    },
+    methods: {
+      getPaperList() {
+        this.$api.getPaperList().then((res) => {
+          if (res.data.status === '1') {
+            console.log(res)
+            this.paperList = res.data.data
+          }
+        })
+      },
+      gotoQuestion(id){
+        this.$router.push(`/question?questionID=${id}`)
+      }
+    },
+    created() {
+      this.getPaperList()
+    }
+  };
 </script>
 
 <style scoped>
-.TestContainer {
-  width: 85%;
-  margin: 0 auto;
-  position: relative;
-  top: -80px;
-  box-sizing: border-box;
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-}
-.ivu-card {
-  width: 30%;
-  margin-left: 8px;
-  margin-right: 8px;
-  text-align: center;
-  margin-bottom:20px;
-}
-.TestList {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  
-}
-.test-img{
-  width: 100px;
-  height: 100px;
-  margin:0 auto;
-}
-.test-img>img{
-  width: 100%;
-  height: 100%;
-}
-.text{
-  margin-top:10px;
-  margin-bottom:10px;
-}
+  .TestContainer {
+    width: 85%;
+    margin: 0 auto;
+    position: relative;
+    top: -80px;
+    box-sizing: border-box;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+  }
+
+  .ivu-card {
+    width: 30%;
+    margin-left: 8px;
+    margin-right: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .TestList {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+  }
+
+  .test-img {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+  }
+
+  .test-img>img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .text {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 </style>

@@ -19,19 +19,19 @@
     components: {
       HelloWorld,
       Icon
-    },
-    mounted() {
-      this.changeUserName('jiangpanlei ')
-    },
-    computed: {
-      ...mapState({
-        user: state => state.user
-      })
-    },
-    methods: {
-      ...mapMutations([
-        'changeUserName'
-      ])
+    // },
+    // mounted() {
+    //   this.changeUserName('jiangpanlei ')
+    // },
+    // computed: {
+    //   ...mapState({
+    //     user: state => state.user
+    //   })
+    // },
+    // methods: {
+    //   ...mapMutations([
+    //     'changeUserName'
+    //   ])
     }
   }
 </script>

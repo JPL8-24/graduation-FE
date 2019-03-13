@@ -4,19 +4,21 @@
         <div class="des">
             <div class="des-title">题目描述</div>
             <div class="des-content">
-                有一对刚出生的兔子（一雌一雄）被放生到一个岛上，兔子会不断繁殖，它们在出生后的第一个月不能繁殖，之后每个月结尾时会生出一雌一雄两只兔子。
-                请问两年结束之时这个岛上会有多少只兔子？
-                请用你熟悉的语言实现一个函数计算 年结束之时这个岛上共有多少只兔子。
+                <pre>
+                    <code>
+                        {{questionData.des}}
+                    </code>
+                </pre>
             </div>
         </div>
         <div class="answer">
             <Input type="textarea" v-model="answer" :rows="14" />
         </div>
         <div class="btn-group">
-            <div class="btn  pre-btn">
+            <div class="btn  pre-btn" @click.stop="pre">
                 上一题
             </div>
-            <div class="btn next-btn">
+            <div class="btn next-btn" @click.stop="next">
                 下一题
             </div>
         </div>
@@ -27,6 +29,9 @@
     import {
         Input
     } from 'iview'
+    import {
+        mapMutations
+    } from 'vuex'
     export default {
         name: '',
         data() {
@@ -36,6 +41,23 @@
         },
         components: {
             Input
+        },
+        props: {
+            questionData: {
+                type: Object
+            }
+        },
+        methods: {
+            ...mapMutations([
+                'setQustionIndex',
+                'setPreQuestionIndex'
+            ]),
+            next() {
+                this.setQustionIndex({})
+            },
+            pre() {
+                this.setPreQuestionIndex()
+            }
         }
     }
 </script>
@@ -62,6 +84,13 @@
     .des-content {
         font-size: 14px;
         line-height: 1.6;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    code {
+        word-wrap: break-word;
+        word-break: break-all;
     }
 
     .answer {
@@ -98,5 +127,15 @@
 
     .next-btn {
         background: #22ae90;
+    }
+
+    pre,
+    code {
+        display: block;
+        overflow: auto;
+        padding: 5px 10px;
+        border: 1px solid #eee;
+        word-wrap: break-word;
+        white-space: pre-wrap;
     }
 </style>
