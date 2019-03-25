@@ -5,7 +5,7 @@
             {{questionData.des}}
         </div>
         <checkbox-group v-model="answer">
-            <div class="options" v-for="(item,key,index) in questionData.options" :key="index">
+            <div class="options" v-for="(item,key,index) in questionData.options" :key="index" ref="option">
                 <Checkbox :label="key" @click.native.self="check($event)">{{item}}</Checkbox>
             </div>
         </checkbox-group>
@@ -49,10 +49,20 @@
             },
             ...mapMutations([
                 'setQustionIndex',
-                'setPreQuestionIndex'
+                'setPreQuestionIndex',
+                'setUserAnswer'
             ]),
             next() {
+                this.setUserAnswer({
+                    userAnswer: this.answer,
+                })
                 this.setQustionIndex({})
+                this.answer=[]
+                let bro = this.$refs['option']
+                let len = bro.length
+                for (let i = 0; i < len; i++) {
+                    bro[i].classList.remove('checked')
+                }
             },
             pre() {
                 this.setPreQuestionIndex()

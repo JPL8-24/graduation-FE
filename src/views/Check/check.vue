@@ -2,72 +2,82 @@
   <div class="main">
     <nav-header></nav-header>
     <div class="container">
-      <h2 class="test-title">关于本学期第一次考试测试</h2>
-      <div class="choose-answer">
-        <div class="item">
-          <span>1:</span>
-          <span>B</span>
-        </div>
-        <div class="item">
-          <span>2:</span>
-          <span>A</span>
-        </div>
-      </div>
+      <h2 class="test-title">{{checkInfo.title}}</h2>
+      <h3 class="test-info"><span>学生ID：{{checkInfo.userID}}</span><span>完成时间:{{checkInfo.doneTime}}</span></h3>
+      <page :checkQuestion='checkQuestion'></page>
+      <ShowInfo :CheckQuestionInfo='CheckQuestionInfo' ></ShowInfo>
       <div class="sperate"></div>
-      <div class="check-container">
-        <div class="checkItem">
-          <div class="content">
-            <span>20:</span> 有一对刚出生的兔子（一雌一雄）被放生到一个岛上，兔子会不断繁殖，它们在出生后的第一个月不能繁殖，之后每个月结尾时会生出一雌一雄两只兔子。
-            请问两年结束之时这个岛上会有多少只兔子？
-            请用你熟悉的语言实现一个函数计算 年结束之时这个岛上共有多少只兔子。
-          </div>
-          <div class="answer">
-            <span>学生答案为：</span>还记得发交话费卡收到货副科级阿萨德会发生地方哈是否合适开放后是否奥斯卡给大家了客服即可拉伸机房打卡机
-          </div>
-          <div class="check">
-            <div>请输入批改意见：</div>
-            <Input type="textarea"/>
-          </div>
-        </div>
-        <div class="checkItem">
-          <div class="content">
-            <span>20:</span> 有一对刚出生的兔子（一雌一雄）被放生到一个岛上，兔子会不断繁殖，它们在出生后的第一个月不能繁殖，之后每个月结尾时会生出一雌一雄两只兔子。
-            请问两年结束之时这个岛上会有多少只兔子？
-            请用你熟悉的语言实现一个函数计算 年结束之时这个岛上共有多少只兔子。
-          </div>
-          <div class="answer">
-            <span>学生答案为：</span>还记得发交话费卡收到货副科级阿萨德会发生地方哈是否合适开放后是否奥斯卡给大家了客服即可拉伸机房打卡机
-          </div>
-          <div class="check">
-            <div>请输入批改意见：</div>
-            <Input type="textarea"/>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import NavHeader from "../../components/NavHeader";
+import Page from './page';
+import ShowInfo from './ShowInfo';
 import { Input } from "iview";
+import {mapState,mapMutations} from 'vuex'
 export default {
   name: "",
   data() {
-    return {};
+    return {
+      userID:'',
+      paperID:'',
+      CheckQuestionInfo:{},
+    };
   },
   components: {
     NavHeader,
-    Input
+    Input,
+    Page,
+    ShowInfo
+  },
+  created () {
+    this.userID=this.$route.query.userID,
+    this.paperID=this.$route.query.paperID
+    this.$api.getStuResult(this.userID,this.paperID).then(res=>{
+      if(res.data.status==='1'){
+        this.setCheckInfo(res.data.data)
+        this.setCheckQuestion(res.data.data.questions)
+        this.CheckQuestionInfo=this.checkQuestion[this.checkIndex]
+      }
+    })
+   
+  },
+  mounted () {
+    document.body.style.backgroundColor='#eee'
+  },
+  methods: {
+    ...mapMutations([
+      'setCheckIndex',
+      'setPreQuestionIndex',
+      'setCheckQuestion',
+      'setCheckInfo'
+    ])
+  },
+  computed: {
+    ...mapState({
+      checkIndex:state=>state.check.checkIndex,
+      checkQuestion:state=>state.check.checkQuestion,
+      checkInfo:state=>state.check.checkInfo
+    })
+  },
+  watch: {
+    checkIndex(newVal,oldVal){
+      this.CheckQuestionInfo=this.checkQuestion[newVal]
+    }
   }
 };
 </script>
 
 <style scoped>
+body{
+    background: #eee;
+}
 .main {
-  background: #eee;
   width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -86,53 +96,14 @@ export default {
   padding: 6px;
 }
 
-.choose-answer {
-  width: 60%;
-  margin: 10px auto;
-  font-size: 18px;
-  border: 1px solid lightgray;
-  display: flex;
+.test-info{
+  text-align: center;
+  font-size:15px;
+  margin:10px 0;
 }
 
-.item {
-  margin: 10px;
-}
-
-.item > span:nth-child(1) {
-  color: lightsalmon;
-}
-
-.item > span:nth-child(2) {
-  animation: fade 0.6s;
-  animation-fill-mode: forwards;
-  opacity: 0;
-}
-
-@keyframes fade {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.check-container {
-  margin: 10px 20px;
-}
-
-.content {
-  font-size: 14px;
-}
-
-.content > span {
-  color: lightsalmon;
-}
-
-.checkItem {
-  border-bottom: 1px soild lightgray;
-  margin: 0 0 20px 0;
+.test-info>span:nth-child(1){
+  margin-right:30px;
 }
 
 .sperate {

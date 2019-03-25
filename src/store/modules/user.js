@@ -7,7 +7,7 @@ const mutations={
     changeUserInfo(state,payload){
         state.userID=payload.userID
         state.userName=payload.userName
-        state.tpye=payload.type
+        state.type=payload.type
     }
 }
 

@@ -73,16 +73,14 @@
                 this.$api.aotuLogin().then((res) => {
                     if (res.data.status === '1') {
                         this.changeUserInfo(res.data.data)
-                    } else if(res.data.status === '2'){
+                        this.$emit('done')
+                    } else if (res.data.status === '2') {
                         Notice.error({
-                            title:'自动登录失败',
-                            desc:'token验证错误'
+                            title: '自动登录失败',
+                            desc: 'token验证错误'
                         })
                     }
-                    
-                }).catch((err) => {
-
-                });
+                })
             },
             ...mapMutations(['changeUserInfo'])
         },
@@ -92,7 +90,7 @@
             })
         },
         created() {
-            this.autoLogin()
+          this.autoLogin()
         }
     };
 </script>

@@ -30,7 +30,8 @@
     Button
   } from "iview";
   import {
-    mapMutations
+    mapMutations,
+    mapState
   } from 'vuex'
   export default {
     name: "",
@@ -57,12 +58,22 @@
       },
       ...mapMutations([
         'setQustionIndex',
-        'setPreQuestionIndex'
+        'setPreQuestionIndex',
+        'setUserAnswer'
       ]),
-      next(){
+      next() {
+        this.setUserAnswer({
+          userAnswer: this.answer
+        })
         this.setQustionIndex({})
+        this.answer = ''
+        let bro = this.$refs['option']
+        let len = bro.length
+        for (let i = 0; i < len; i++) {
+          bro[i].classList.remove('checked')
+        }
       },
-      pre(){
+      pre() {
         this.setPreQuestionIndex()
       }
     },

@@ -7,6 +7,7 @@ const Forum =()=>import('./views/Forum/Forum.vue')
 const Publish=()=> import('./views/Publish/index.vue')
 const THome=()=> import('./views/THome/THome.vue')
 const Check=()=> import('./views/Check/check.vue')
+const Analyze=()=>import('./views/Analyze/analyze.vue')
 
 Vue.use(Router)
 
@@ -42,5 +43,9 @@ export default new Router({
     path:'/check',
     name:'check',
     component:Check
+  },{
+    path:'/analyze',
+    name:'analyze',
+    component:Analyze
   }]
 })

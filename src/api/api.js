@@ -28,5 +28,26 @@ export default {
     },
     getPaperContent(id){
         return axios.get(`/api/paperContent?paperID=${id}`)
+    },
+    postResultToStu(userID,questionInfo){
+        return axios.post('/api/resultToStu',{
+            userID,
+            questionInfo
+        })
+    },
+    postResultToTea(teaID,questionInfo){
+        return axios.post('/api/resultToTea',{
+            teaID,
+            questionInfo
+        })
+    },
+    getCheckList(teacherID){
+        return axios.get(`/api/checkList?teacherID=${teacherID}`)
+    },
+    getStuResult(userID,paperID){
+        return axios.get(`/api/studentResult?userID=${userID}&paperID=${paperID}`)
+    },
+    postCheckResult(payload){
+        return axios.post('/api/checkResult',payload)
     }
 }
