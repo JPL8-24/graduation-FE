@@ -2,7 +2,7 @@
     <div class="">
         <nav-header></nav-header>
         <div class="topic-publish">
-            <input placeholder="帖子标题：一句话说明你遇到的问题或想分享的经验" />
+            <input placeholder="帖子标题：一句话说明你遇到的问题或想分享的经验" v-model="title" />
         </div>
         <div class="remark">
             <div class="remark-content">
@@ -11,13 +11,13 @@
 
         </div>
         <div class="content-publish">
-            <Input type="textarea" rows=30 />
+             <quill-editor v-model="des" ref="myQuillEditor"  class="editor"> </quill-editor> 
         </div>
         <div class="btn-group">
-            <div class="btn  pre-btn">
+            <div class="btn  pre-btn" @click="go('/forum')">
                 取消
             </div>
-            <div class="btn next-btn">
+            <div class="btn next-btn" @click="AddForum">
                 发布
             </div>
         </div>
@@ -26,17 +26,65 @@
 
 <script type="text/ecmascript-6">
     import NavHeader from "../../components/NavHeader";
+    import tool from '../../tool.js'
     import {
-        Input
+        Input,
+        Notice
     } from 'iview'
+    import {
+        mapState
+    } from 'vuex'
+    import {
+        quillEditor
+    } from 'vue-quill-editor'
     export default {
         name: '',
         data() {
-            return {}
+            return {
+                title: "",
+                des: ""
+            }
         },
         components: {
             NavHeader,
-            Input
+            Input,
+            Notice,
+            quillEditor
+        },
+        methods: {
+            go(url) {
+                this.$router.go(url)
+            },
+            AddForum() {
+                let postID = tool.genID()
+                const payload = {}
+                payload.title = this.title
+                payload.des = this.des
+                payload.date = new Date().toLocaleString()
+                payload.comments = []
+                payload.user = {
+                    userID: this.userID,
+                    userName: this.userName,
+                    portrait:this.portrait
+                }
+                payload.postID = postID
+                this.$api.postAddForum(payload).then((res) => {
+                    if (res.data.status === "1") {
+                        Notice.success({
+                            title: "发帖成功",
+                            desc: "帖子已发布至论坛中"
+                        })
+                        this.$router.push('/forum')
+                    }
+                })
+            }
+        },
+        computed: {
+            ...mapState({
+                userID: state => state.user.userID,
+                userName: state => state.user.userName,
+                portrait:state=>state.user.portrait
+            })
         }
     }
 </script>
@@ -79,6 +127,7 @@
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
+        margin-top:60px;
     }
 
     .btn {
@@ -103,5 +152,9 @@
 
     .next-btn {
         background: #22ae90;
+    }
+
+    .editor{
+        height: 500px;;
     }
 </style>

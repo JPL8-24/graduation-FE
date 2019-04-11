@@ -48,7 +48,7 @@
         },
         created() {
             document.body.style.backgroundColor = '#eee',
-            this.userID = this.$route.query.userID
+                this.userID = this.$route.query.userID
             this.paperID = this.$route.query.paperID
 
         }
@@ -64,7 +64,7 @@
 
     .container {
         width: 60%;
-       min-height: 300px;
+        min-height: 300px;
         margin: 10px auto;
         background: white;
         border-radius: 10px;

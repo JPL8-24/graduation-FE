@@ -134,6 +134,6 @@
 
   .ischeck {
     margin-left: 30px;
-    color: #59b59c;;
+    color: #59b59c;
   }
 </style>

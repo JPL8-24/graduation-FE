@@ -49,5 +49,81 @@ export default {
     },
     postCheckResult(payload){
         return axios.post('/api/checkResult',payload)
+    },
+    getUserPaperList(userID){
+        return axios.get(`/api/users/PaperList?userID=${userID}`)
+    },
+    postAddForum(payload){
+        return axios.post('/api/addForum',{
+            payload
+        })
+    },
+    getPostList(page,pageSize){
+        return axios.get(`/api/postList?page=${page}&pageSize=${pageSize}`)
+    },
+    getPostDetail(postID){
+        return axios.get(`/api/postDetail?postID=${postID}`)
+    },
+    postAddComment(postID,payload) {
+        return axios.post('/api/addComment',{
+            postID,
+            payload
+        })
+    },
+    postAddReply(postID,commentID,payload){
+        return axios.post('/api/addReply',{
+            postID,
+            commentID,
+            payload
+        })
+    },
+    postRemoveComment(postID,commentID){
+        return  axios.post('/api/removeComment',{
+            postID,
+            commentID
+        })
+    },
+    postRemoveReply(postID,commentID,replyID) {
+        return axios.post('/api/removeReply',{
+            postID,
+            commentID,
+            replyID
+        })
+    },
+    getUserPostList(userID) {
+        return axios.get(`/api/UserPostList?userID=${userID}`)
+    },
+    postRemovePost(userID,postID) {
+        return axios.post('/api/removePost',{
+            userID,
+            postID
+        })
+    },
+    postVertifyPassword(userID,passWord) {
+        return axios.post('/api/vertifyPassword',{
+            userID,
+            passWord
+        })
+    },
+    postModifyPassword(userID,passWord) {
+        return axios.post('/api/modifyPassword',{
+            userID,
+            passWord
+        })
+    },
+    postUploadPortrait(data) {
+        const instance = axios.create({
+            withCredentials:true
+        })
+        return instance.post('/api/uploadPortrait',data)
+    },
+    postModifyPortrait(userID,portrait) {
+        return axios.post('/api/modifyPortrait',{
+            userID,
+            portrait
+        })
+    },
+    postAddPaper(payload) {
+        return axios.post('/api/addPaper',payload)
     }
 }

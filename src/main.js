@@ -4,6 +4,11 @@ import router from './router'
 import store from './store/store'
 import api from './api/api'
 import echart from 'echarts'
+import VueQuillEditor from 'vue-quill-editor' // require styles 引入样式 
+import 'quill/dist/quill.core.css' 
+import 'quill/dist/quill.snow.css' 
+import 'quill/dist/quill.bubble.css' 
+Vue.use(VueQuillEditor)
 
 import './plugins/iview.js'
 import 'iview/dist/styles/iview.css'

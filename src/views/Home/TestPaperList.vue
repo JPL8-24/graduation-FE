@@ -42,7 +42,6 @@
       getPaperList() {
         this.$api.getPaperList().then((res) => {
           if (res.data.status === '1') {
-            console.log(res)
             this.paperList = res.data.data
           }
         })

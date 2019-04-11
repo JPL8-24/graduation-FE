@@ -71,6 +71,7 @@ export default {
       questionInfo.title = this.questionInfo.title;
       questionInfo.questions = this.localDb;
       questionInfo.paperID = this.questionInfo.paperID;
+      questionInfo.img = this.questionInfo.Img
       this.$api.postResultToStu(this.userID, questionInfo).then(res => {
         if (res.data.status === "1") {
           const resultToTea = {};
@@ -80,7 +81,13 @@ export default {
           resultToTea.title = this.questionInfo.title;
           let teaID = this.questionInfo.teacherID;
           this.$api.postResultToTea(teaID, resultToTea).then(res => {
-              
+              if(res.data.status==='1') {
+                Notice.success({
+                  title:'交卷成功',
+                  desc:'待老师批改完成后在个人中心查看考试结果'
+                })
+                this.$router.push('/home')
+              }
           });
         } else if (res.data.status==='3'){
             Notice.error({

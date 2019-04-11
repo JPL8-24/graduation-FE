@@ -5,23 +5,29 @@
                 <img src="../assets/川大.jpg">
             </div>
             <div>
-                <MenuItem name="1" class="MenuItem">
+                <MenuItem name="1" class="MenuItem" @click.native="goHome">
                 <Icon type="md-globe" />首页
                 </MenuItem>
-                <MenuItem name="2" class="MenuItem">
+                <MenuItem name="2" class="MenuItem" @click.native="go('/forum')">
                 <Icon type="ios-baseball-outline" />讨论区
                 </MenuItem>
-                <MenuItem name="3" class="MenuItem">
+                <MenuItem name="3" class="MenuItem" @click.native="go('/personal')">
                 <Icon type="ios-man-outline" />个人中心
                 </MenuItem>
             </div>
             <div class="userInfo" @mouseover="menuShow" @mouseout="menuOut">
-                <Avatar icon="ios-person" size="large" />
+                <Avatar icon="ios-person" size="large" :src="portrait" />
                 <p>{{userName}}</p>
                 <Icon type="ios-arrow-dropdown" size="24" />
                 <transition name="fade">
                     <div class="A" v-if="menu">
-                        <div class="listItem">
+                        <div class="listItem" @click="go('/uploadPortrait')">
+                            <Icon type="md-alert" size='14' />修改头像</div>
+                        <div class="listItem" @click="go('/uploadPaper')" v-if="type==1">
+                            <Icon type="md-alert" size='14' />上传试卷</div>
+                        <div class="listItem" @click="go('/ModifyPassword')">
+                            <Icon type="md-alert" size='14' />修改密码</div>
+                        <div class="listItem" @click="logout">
                             <Icon type="md-alert" size='14' />注销</div>
                     </div>
                 </transition>
@@ -82,15 +88,33 @@
                     }
                 })
             },
-            ...mapMutations(['changeUserInfo'])
+            ...mapMutations(['changeUserInfo']),
+            go(url) {
+                this.$router.push(url)
+            },
+            logout() {
+                localStorage.removeItem('token')
+                this.$router.push('/login')
+            },
+            goHome() {
+                if (this.type === 1) {
+                    this.$router.push('/Thome')
+                } else if (this.type === 0) {
+                    this.$router.push('/home')
+                }
+            }
         },
         computed: {
             ...mapState({
                 userName: state => state.user.userName,
+                portrait: state => state.user.portrait,
+                type: state => state.user.type
+
             })
         },
         created() {
-          this.autoLogin()
+            this.autoLogin()
+            console.log(this.activename)
         }
     };
 </script>
@@ -144,6 +168,8 @@
         left: 0;
         width: 100%;
         transition: all 1s;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
     }
 
     .fade-enter {
@@ -164,10 +190,13 @@
 
     .listItem {
         text-align: center;
-        font-size: 12px;
+        font-size: 13px;
         color: black;
         height: 40px;
         line-height: 40px;
+        color: #023064;
+        border-bottom: 1px solid #d4d4d4;
+
     }
 
     .listItem:hover {
