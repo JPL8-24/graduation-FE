@@ -2,19 +2,14 @@
     <div class="">
         <NavHeader></NavHeader>
         <div class="container">
-            <Upload :before-upload="handleUpload" action="//jsonplaceholder.typicode.com/posts/">
-                <Button icon="ios-cloud-upload-outline">Select the file to upload</Button>
+            <Upload :before-upload="handleUpload" action=""  >
+                <Button icon="ios-cloud-upload-outline">请选择一张图片上传</Button>
             </Upload>
             <div v-if="file !== null">Upload file: {{ file.name }} <Button type="text" @click="upload"
                     :loading="loadingStatus">{{ loadingStatus ? 'Uploading' : 'Click to upload' }}</Button></div>
             <div class="img-box">
                 <img src="" class="img" />
             </div>
-            <Upload :before-upload="handleUpload" action="//jsonplaceholder.typicode.com/posts/">
-                <Button icon="ios-cloud-upload-outline">Select the file to upload</Button>
-            </Upload>
-            <div v-if="file !== null">Upload file: {{ file.name }} <Button type="text" @click="upload"
-                    :loading="loadingStatus">{{ loadingStatus ? 'Uploading' : 'Click to upload' }}</Button></div>
         </div>
 
     </div>
@@ -25,7 +20,7 @@
     import {
         Upload,
         Button,
-        Notice
+        Notice,
     } from 'iview'
     import {
         mapState,
@@ -42,15 +37,24 @@
         components: {
             NavHeader,
             Upload,
-            Button
+            Button,
+            Notice
         },
         methods: {
             handleUpload(file) {
-                this.file = file;
-                const reader = new FileReader()
-                reader.readAsDataURL(file)
-                reader.onloadend = function (e) {
-                    document.getElementsByClassName('img')[0].src = reader.result
+                let format = file.name.split('.')[1]
+                if (format != 'jpg' && format != 'jpeg' && format != 'png') {
+                    Notice.warning({
+                        title: 'The file format is incorrect',
+                        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    });
+                } else {
+                    this.file = file;
+                    const reader = new FileReader()
+                    reader.readAsDataURL(file)
+                    reader.onloadend = function (e) {
+                        document.getElementsByClassName('img')[0].src = reader.result
+                    }
                 }
                 return false;
             },
@@ -79,7 +83,14 @@
                 })
 
             },
-            ...mapMutations(['changeUserInfo'])
+            ...mapMutations(['changeUserInfo']),
+            handleFormatError(file) {
+                console.log('11')
+                Notice.warning({
+                    title: 'The file format is incorrect',
+                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                });
+            }
         },
         mounted() {
             document.body.style.backgroundColor = '#eee'

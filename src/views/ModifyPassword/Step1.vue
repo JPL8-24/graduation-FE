@@ -37,8 +37,7 @@
          Button
       },
       methods: {
-         handleNextStep(name) {
-            
+         handleNextStep(name) {     
             if (this.password1 != this.password2) {
                return Notice.error({
                   title: "两次输入密码不同"

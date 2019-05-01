@@ -11,7 +11,7 @@
 
         </div>
         <div class="content-publish">
-             <quill-editor v-model="des" ref="myQuillEditor"  class="editor"> </quill-editor> 
+            <quill-editor v-model="des" ref="myQuillEditor" class="editor"> </quill-editor>
         </div>
         <div class="btn-group">
             <div class="btn  pre-btn" @click="go('/forum')">
@@ -56,34 +56,44 @@
                 this.$router.go(url)
             },
             AddForum() {
-                let postID = tool.genID()
-                const payload = {}
-                payload.title = this.title
-                payload.des = this.des
-                payload.date = new Date().toLocaleString()
-                payload.comments = []
-                payload.user = {
-                    userID: this.userID,
-                    userName: this.userName,
-                    portrait:this.portrait
-                }
-                payload.postID = postID
-                this.$api.postAddForum(payload).then((res) => {
-                    if (res.data.status === "1") {
-                        Notice.success({
-                            title: "发帖成功",
-                            desc: "帖子已发布至论坛中"
-                        })
-                        this.$router.push('/forum')
+                if (this.title == "") {
+                    Notice.warning({
+                        title: "帖子标题不能为空"
+                    })
+                } else if (this.des == "") {
+                    Notice.warning({
+                        title: "帖子内容不能为空"
+                    })
+                } else {
+                    let postID = tool.genID()
+                    const payload = {}
+                    payload.title = this.title
+                    payload.des = this.des
+                    payload.date = new Date().toLocaleString()
+                    payload.comments = []
+                    payload.user = {
+                        userID: this.userID,
+                        userName: this.userName,
+                        portrait: this.portrait
                     }
-                })
+                    payload.postID = postID
+                    this.$api.postAddForum(payload).then((res) => {
+                        if (res.data.status === "1") {
+                            Notice.success({
+                                title: "发帖成功",
+                                desc: "帖子已发布至论坛中"
+                            })
+                            this.$router.push('/forum')
+                        }
+                    })
+                }
             }
         },
         computed: {
             ...mapState({
                 userID: state => state.user.userID,
                 userName: state => state.user.userName,
-                portrait:state=>state.user.portrait
+                portrait: state => state.user.portrait
             })
         }
     }
@@ -127,7 +137,7 @@
         display: flex;
         justify-content: center;
         padding-bottom: 30px;
-        margin-top:60px;
+        margin-top: 60px;
     }
 
     .btn {
@@ -154,7 +164,8 @@
         background: #22ae90;
     }
 
-    .editor{
-        height: 500px;;
+    .editor {
+        height: 500px;
+        ;
     }
 </style>

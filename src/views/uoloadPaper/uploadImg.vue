@@ -16,7 +16,8 @@
 <script type="text/ecmascript-6">
     import {
         Upload,
-        Button
+        Button,
+        Notice
     } from 'iview'
     export default {
         name: '',
@@ -28,15 +29,24 @@
         },
         components: {
             Upload,
-            Button
+            Button,
+            Notice
         },
         methods: {
             handleUpload(file) {
-                this.file = file
-                const reader = new FileReader()
-                reader.readAsDataURL(file)
-                reader.onloadend = function (e) {
-                    document.getElementById('img').src = reader.result
+                let format = file.name.split('.')[1]
+                if (format != 'jpg' && format != 'jpeg' && format != 'png') {
+                    Notice.warning({
+                        title: 'The file format is incorrect',
+                        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    });
+                } else {
+                    this.file = file
+                    const reader = new FileReader()
+                    reader.readAsDataURL(file)
+                    reader.onloadend = function (e) {
+                        document.getElementById('img').src = reader.result
+                    }
                 }
                 return false;
             },

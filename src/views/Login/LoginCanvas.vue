@@ -119,6 +119,7 @@
             function startFill() {
                 ctx.clearRect(0, 0, c.width, c.height)
                 c1.rounder(x, y)
+                
             }
             //鼠标跟踪方法
             c.addEventListener("mousemove", function (e) {
@@ -126,7 +127,7 @@
                 y = e.offsetY;
             });
             //开启定时器
-            // this.timer=setInterval(startFill, 17)
+            this.timer=setInterval(startFill, 17)
         },
         destroyed(){
             clearInterval(this.timer)

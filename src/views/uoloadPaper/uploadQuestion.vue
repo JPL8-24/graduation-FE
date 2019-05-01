@@ -18,7 +18,8 @@
     import {
         Upload,
         Button,
-        Icon
+        Icon,
+        Notice
     } from 'iview'
     export default {
         name: '',
@@ -32,19 +33,28 @@
         components: {
             Upload,
             Button,
-            Icon
+            Icon,
+            Notice
         },
         methods: {
             handleUpload(file) {
-                this.file = file
-                let reader = new FileReader()
-                reader.readAsText(file)
-                reader.onloadend = () => {
-                    this.questions = JSON.parse(reader.result)
+                let format = file.name.split('.')[1]
+                if (format != 'json') {
+                    Notice.warning({
+                        title: 'The file format is incorrect',
+                        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    });
+                } else {
+                    this.file = file
+                    let reader = new FileReader()
+                    reader.readAsText(file)
+                    reader.onloadend = () => {
+                        this.questions = JSON.parse(reader.result)
+                    }
                 }
             },
-            nextStep(){
-              this.$emit('nextStep4',this.questions)
+            nextStep() {
+                this.$emit('nextStep4', this.questions)
             }
 
         }

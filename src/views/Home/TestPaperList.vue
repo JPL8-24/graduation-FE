@@ -4,13 +4,14 @@
       <card>
         <p slot="title">招商银行信用卡中心2019秋招IT笔试（AI方向第三批）</p>
         <div class="test-img">
-          <img src="https://uploadfiles.nowcoder.com/images/20180809/4107856_1533797817203_60018B7A8B3D9A9425C8F7C73B8ED0F7">
+          <img
+            src="https://uploadfiles.nowcoder.com/images/20180809/4107856_1533797817203_60018B7A8B3D9A9425C8F7C73B8ED0F7">
         </div>
         <p class="text">共25题</p>
         <Rate disabled v-model='value' show-text>
         </Rate>
       </card>
-      <card v-for="item in paperList" :key="item.id" @click.native="gotoQuestion(item.paperID)">
+      <card v-for="item in paperList" :key="item.id" @click.native="gotoQuestion(item.paperID,item.StudentList)">
         <p slot="title">{{item.title}}</p>
         <div class="test-img">
           <img :src="item.Img">
@@ -25,8 +26,12 @@
 <script type="text/ecmascript-6">
   import {
     Card,
-    Rate
+    Rate,
+    Notice
   } from "iview";
+  import {
+    mapState
+  } from 'vuex'
   export default {
     data() {
       return {
@@ -36,7 +41,8 @@
     },
     components: {
       Card,
-      Rate
+      Rate,
+      Notice
     },
     methods: {
       getPaperList() {
@@ -46,12 +52,23 @@
           }
         })
       },
-      gotoQuestion(id){
+      gotoQuestion(id, StudentList) {
+        if (StudentList.indexOf(this.userID) < 0) {
+          Notice.warning({
+            title:'你不是本次考试的考生'
+          })
+          return
+        }
         this.$router.push(`/question?questionID=${id}`)
       }
     },
     created() {
       this.getPaperList()
+    },
+    computed: {
+      ...mapState({
+        userID: state => state.user.userID
+      })
     }
   };
 </script>
@@ -77,11 +94,11 @@
   }
 
   .TestList {
-    width: 100%;
+    width: 90%;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
-
+    margin: 0 auto;
   }
 
   .test-img {

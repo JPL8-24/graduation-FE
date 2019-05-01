@@ -48,7 +48,8 @@
             Step,
             fillInfo,
             uploadImg,
-            uploadQuestion
+            uploadQuestion,
+            success
         },
         mounted() {
             document.body.style.backgroundColor = "#eee"

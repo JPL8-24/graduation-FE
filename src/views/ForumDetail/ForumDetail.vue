@@ -82,7 +82,9 @@
 <script type="text/ecmascript-6">
   import NavHeader from "../../components/NavHeader";
   import {
-    Input
+    Input,
+    Notice,
+    Modal
   } from "iview";
   import {
     mapState
@@ -95,12 +97,15 @@
         postDetail: {},
         postID: "",
         comment_content: "",
-        reply_List: []
+        reply_List: [],
+        modal:false
       };
     },
     components: {
       NavHeader,
-      Input
+      Input,
+      Notice,
+      Modal
     },
     mounted() {
       document.body.style.backgroundColor = "#eee";
@@ -116,22 +121,29 @@
         });
       },
       addCommet() {
-        let genID = tool.genID();
-        const payload = {};
-        payload.date = new Date().toLocaleString();
-        payload.user = {
-          userID: this.userID,
-          userName: this.userName
-        };
-        payload.des = this.comment_content;
-        payload.reply = [];
-        payload.commentID = genID;
-        this.$api.postAddComment(this.postID, payload).then(res => {
-          if (res.data.status === "1") {
-            this.comment_content = "";
-            this.getDetail(this.postID);
-          }
-        });
+        if (this.comment_content == "") {
+          Notice.warning({
+            title: "回复内容不能为空"
+          })
+        } else {
+          let genID = tool.genID();
+          const payload = {};
+          payload.date = new Date().toLocaleString();
+          payload.user = {
+            userID: this.userID,
+            userName: this.userName
+          };
+          payload.des = this.comment_content;
+          payload.reply = [];
+          payload.commentID = genID;
+          this.$api.postAddComment(this.postID, payload).then(res => {
+            if (res.data.status === "1") {
+              this.comment_content = "";
+              this.getDetail(this.postID);
+            }
+          });
+        }
+
       },
       ToggleReply(index) {
         let current = this.$refs["reply_input"][index];

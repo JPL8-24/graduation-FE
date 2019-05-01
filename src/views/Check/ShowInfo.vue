@@ -28,11 +28,11 @@
       </div>
       <div class="answer">
         <span>学生答案为：</span>
-        {{CheckQuestionInfo.userAnswer}}
+        <div v-html="CheckQuestionInfo.userAnswer"></div>
       </div>
-      <div class="check">
+      <div class="check quill">
         <div>请输入批改意见：</div>
-        <Input type="textarea" v-model="answer"/>
+        <quill-editor v-model="answer" class="editor"> </quill-editor>
       </div>
       <div class="check">
         <div>请输入批改分数：</div>
@@ -48,153 +48,189 @@
 </template>
 
 <script type="text/ecmascript-6">
-import { mapState, mapMutations } from "vuex";
-import { Input, Notice, InputNumber } from "iview";
-export default {
-  name: "",
-  data() {
-    return {
-      answer: "",
-      value1: 1
-    };
-  },
-  components: {
+  import {
+    mapState,
+    mapMutations
+  } from "vuex";
+  import {
     Input,
     Notice,
     InputNumber
-  },
-  props: ["CheckQuestionInfo", "StuID", "info"],
-  methods: {
-    ...mapMutations(["setCheckIndex", "setPreQuestionIndex", "setCheckMethod"]),
-    next() {
-      if (this.CheckQuestionInfo.type === "3") {
+  } from "iview";
+    import {
+    quillEditor
+  } from 'vue-quill-editor'
+  export default {
+    name: "",
+    data() {
+      return {
+        answer: "",
+        value1: 1
+      };
+    },
+    components: {
+      Input,
+      Notice,
+      InputNumber,
+      quillEditor
+    },
+    props: ["CheckQuestionInfo", "StuID", "info"],
+    methods: {
+      ...mapMutations(["setCheckIndex", "setPreQuestionIndex", "setCheckMethod"]),
+      next() {
+        if (this.CheckQuestionInfo.type === "3") {
+          this.setCheckMethod({
+            checkMethod: this.answer,
+            checkRate: this.value1
+          });
+          this.answer = "";
+          this.value1 = 0;
+        }
+        this.setCheckIndex({});
+      },
+      postCheck() {
         this.setCheckMethod({
           checkMethod: this.answer,
           checkRate: this.value1
         });
-        this.answer = "";
-        this.value1 = 0;
-      }
-      this.setCheckIndex({});
-    },
-    postCheck() {
-      this.setCheckMethod({
-        checkMethod: this.answer,
-        checkRate: this.value1
-      });
-      const payload = {};
-      payload.teacherID = this.userID;
-      payload.stuID = this.checkInfo.userID;
-      payload.paperID = this.checkInfo.paperID;
-      payload.checkResult = this.checkQuestion;
-      console.log(payload);
-      this.$api.postCheckResult(payload).then(res => {
-        if (res.data.status === "1") {
-          Notice.success({
-            title: "操作成功",
-            desc: "批改结果成功通知给学生"
+        let isDone = true
+        this.checkQuestion.forEach(item => {
+          if (item.type == "3") {
+            if (item.hasOwnProperty('checkRate')) {
+              return
+            } else {
+              isDone = false
+            }
+          }
+        })
+        if (isDone) {
+          const payload = {};
+          payload.teacherID = this.userID;
+          payload.stuID = this.checkInfo.userID;
+          payload.paperID = this.checkInfo.paperID;
+          payload.checkResult = this.checkQuestion;
+          console.log(payload);
+          this.$api.postCheckResult(payload).then(res => {
+            if (res.data.status === "1") {
+              Notice.success({
+                title: "操作成功",
+                desc: "批改结果成功通知给学生"
+              });
+              this.$router.push("/Thome");
+            }
           });
-          this.$router.push("/Thome");
+        } else {
+          Notice.warning({
+            title: "你还未批改完全部题目 "
+          })
         }
-      });
+      }
+    },
+    computed: {
+      ...mapState({
+        checkIndex: state => state.check.checkIndex,
+        checkQuestion: state => state.check.checkQuestion,
+        checkInfo: state => state.check.checkInfo,
+        userID: state => state.user.userID
+      })
     }
-  },
-  computed: {
-    ...mapState({
-      checkIndex: state => state.check.checkIndex,
-      checkQuestion: state => state.check.checkQuestion,
-      checkInfo: state => state.check.checkInfo,
-      userID: state => state.user.userID
-    })
-  }
-};
+  };
 </script>
 
 <style scoped>
-.Infocontainer {
-  width: 86%;
-  margin: 10px auto;
-  font-size: 14px;
-}
+  .Infocontainer {
+    width: 86%;
+    margin: 10px auto;
+    font-size: 14px;
+  }
 
-.des {
-  margin-bottom: 6px;
-}
+  .des {
+    margin-bottom: 6px;
+  }
 
-.des > span {
-  margin-right: 4px;
-  color: lightsalmon;
-}
+  .des>span {
+    margin-right: 4px;
+    color: lightsalmon;
+  }
 
-.Options {
-  display: flex;
-  flex-direction: column;
-}
+  .Options {
+    display: flex;
+    flex-direction: column;
+  }
 
-.OptionItem {
-  min-height: 40px;
-  border: 1px solid #2d8cf0;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 6px;
-  margin-top: 6px;
-}
+  .OptionItem {
+    min-height: 40px;
+    border: 1px solid #2d8cf0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
 
-.answer {
-  font-size: 14px;
-  margin-top: 4px;
-}
+  .answer {
+    font-size: 14px;
+    margin-top: 4px;
+  }
 
-.answer > span {
-  color: lightsalmon;
-}
+  .answer>span {
+    color: lightsalmon;
+  }
 
-.check {
-  margin-top: 6px;
-}
+  .check {
+    margin-top: 6px;
+  }
 
-.check > div {
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: lightsalmon;
-}
+  .quill{
+    margin-bottom:70px;
+  }
 
-.Canswer > span:nth-child(1) {
-  color: lightsalmon;
-}
+  .check>div {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: lightsalmon;
+  }
 
-.btn-group {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 30px;
-}
+  .Canswer>span:nth-child(1) {
+    color: lightsalmon;
+  }
 
-.btn {
-  display: inline-block;
-  text-align: center;
-  padding: 10px 0;
-  width: 110px;
-  color: #fff;
-  font-size: 14px;
-  border-radius: 3px;
-  border: none 0;
-  cursor: pointer;
-  line-height: normal;
-  outline: 0;
-  white-space: nowrap;
-}
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 30px;
+  }
 
-.pre-btn {
-  background: #ff6547;
-  margin-right: 15px;
-}
+  .btn {
+    display: inline-block;
+    text-align: center;
+    padding: 10px 0;
+    width: 110px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 3px;
+    border: none 0;
+    cursor: pointer;
+    line-height: normal;
+    outline: 0;
+    white-space: nowrap;
+  }
 
-.next-btn {
-  background: #22ae90;
-}
+  .pre-btn {
+    background: #ff6547;
+    margin-right: 15px;
+  }
 
-.right {
-  background: #59b59c;
-  color: white;
-}
+  .next-btn {
+    background: #22ae90;
+  }
+
+  .right {
+    background: #59b59c;
+    color: white;
+  }
+  .editor{
+    height: 100px;
+    color:black !important;
+  }
+
 </style>

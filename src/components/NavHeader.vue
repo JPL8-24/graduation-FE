@@ -27,12 +27,15 @@
                             <Icon type="md-alert" size='14' />上传试卷</div>
                         <div class="listItem" @click="go('/ModifyPassword')">
                             <Icon type="md-alert" size='14' />修改密码</div>
-                        <div class="listItem" @click="logout">
+                        <div class="listItem" @click="modal=true">
                             <Icon type="md-alert" size='14' />注销</div>
                     </div>
                 </transition>
             </div>
         </Menu>
+        <Modal v-model="modal" title="是否要注销" @on-ok="logout" @on-cancel="modal=false">
+            <p>注销后需要重新输入账号密码才能进入系统</p>
+        </Modal>
     </div>
 </template>
 
@@ -44,7 +47,8 @@
         MenuGroup,
         Icon,
         Avatar,
-        Notice
+        Notice,
+        Modal
     } from "iview";
     import {
         mapState,
@@ -55,7 +59,8 @@
         data() {
             return {
                 theme1: "primary",
-                menu: false
+                menu: false,
+                modal:false
             };
         },
         components: {
@@ -65,7 +70,8 @@
             MenuGroup,
             Icon,
             Avatar,
-            Notice
+            Notice,
+            Modal
         },
         props: ["activename"],
         methods: {
@@ -102,7 +108,7 @@
                 } else if (this.type === 0) {
                     this.$router.push('/home')
                 }
-            }
+            },
         },
         computed: {
             ...mapState({

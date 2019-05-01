@@ -28,11 +28,11 @@
             </div>
             <div class="answer">
                 <span>学生答案为：</span>
-                {{currentAnalyze.userAnswer}}
+                <div v-html="currentAnalyze.userAnswer"></div>
             </div>
             <div class="answer">
                 <span>老师批改意见为：</span>
-                {{currentAnalyze.checkMethod}}
+                <div v-html="currentAnalyze.checkMethod"></div>
             </div>
             <div class="answer">
                 <span>本简答题得分：</span>

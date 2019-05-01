@@ -4,12 +4,12 @@
             <Icon type="ios-boat" size='18' />你的考试列表</div>
         <div class="List">
             <div class="Item" v-for="item in testList" :key="item.paperID"
-                @click="goToAnalyze(item.paperID,item.userID)">
+                @click="goToAnalyze(item.paperID,item.userID,item.isChecked)">
                 <div class="img"><img :src="item.img"></div>
                 <div class="test_title">{{item.title}}</div>
                 <div class="test_title">{{item.doneTime}}</div>
                 <div class="checked" v-if="item.isChecked">已批改</div>
-                <div class="noCheck" v-else>已批改</div>
+                <div class="noCheck" v-else>未批改</div>
             </div>
         </div>
     </div>
@@ -17,7 +17,8 @@
 
 <script type="text/ecmascript-6">
     import {
-        Icon
+        Icon,
+        Notice
     } from 'iview'
 
     export default {
@@ -28,12 +29,19 @@
             }
         },
         components: {
-            Icon
+            Icon,
+            Notice
         },
         props: ['testList'],
         methods: {
-            goToAnalyze(paperID, userID) {
-                this.$router.push(`/analyze?paperID=${paperID}&userID=${userID}`)
+            goToAnalyze(paperID, userID, isChecked) {
+                if (isChecked) {
+                    this.$router.push(`/analyze?paperID=${paperID}&userID=${userID}`)
+                } else {
+                    Notice.warning({
+                        title:"试卷还未批改完成，不能进入"
+                    })
+                }
             }
         }
     }

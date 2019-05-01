@@ -13,7 +13,7 @@
         <div class="time">2018-6-15</div>
       </div>
       <div v-for="Titem in checkList" :key="Titem.paperID">
-        <div class="item" v-for="Nitem in Titem.noCheck" :key="Nitem.userID" @click="goCheck(Titem.paperID,Nitem.userID)">
+        <div class="item" v-for="Nitem in Titem.noCheck" :key="Nitem.userID" @click="goCheck(Titem.paperID,Nitem.userID,'no')">
           <div class="avatar">
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#icon-icon30"></use>
@@ -24,7 +24,7 @@
           <div class="time">{{Nitem.doneTime}}</div>
           <div class="nocheck">未批改</div>
         </div>
-        <div class="item" v-for="Citem in Titem.checked" :key="Citem.userID" @click="goCheck(Titem.paperID,Citem.userID)">
+        <div class="item" v-for="Citem in Titem.checked" :key="Citem.userID" @click="goCheck(Titem.paperID,Citem.userID,'ok')">
           <div class="avatar">
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#icon-icon30"></use>
@@ -45,6 +45,7 @@
   import {
     mapState
   } from "vuex";
+  import {Notice} from 'iview'
   export default {
     name: "",
     data() {
@@ -53,7 +54,8 @@
       };
     },
     components: {
-      NavHeader
+      NavHeader,
+      Notice
     },
     methods: {
       getCheckList(teacherID) {
@@ -62,8 +64,16 @@
           console.log(this.checkList);
         });
       },
-      goCheck(paperID, userID) {
-        this.$router.push(`/check?paperID=${paperID}&userID=${userID}`)
+      goCheck(paperID, userID,flag) {
+        console.log(flag)
+        if(flag=='no') {
+          this.$router.push(`/check?paperID=${paperID}&userID=${userID}`)
+        } else {
+          Notice.warning({
+            title:"该学生试卷已经批改过"
+          })
+        }
+       
       }
     },
     computed: {
